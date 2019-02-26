@@ -1,0 +1,25 @@
+#left {
+  padding-left: 0px;
+  margin-left: 0px;
+  top: 55px;
+  left: 0px;
+  bottom: 0px;
+  width: 30%;
+  position: fixed;
+  height: calc(100% - 54px);
+  overflow-y: scroll;
+  overflow-y: fixed;
+  
+
+}
+
+#right {
+  padding-right: 0px;
+  margin-right: 0px;
+  height: calc(100% - 54px - 50px);
+  top: 55px;
+  left: 30%;
+  bottom: 0px;
+  width: 70%;
+  position: fixed;
+}

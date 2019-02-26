@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="row">
+    <div class="col-8 offset-2">
+      <h2 class="text-center">select user</h2>
+      <div class="list-group">
+        <a *ngFor="let user of users" (click)="onSelect(user._id)" style="cursor: pointer;" class="list-group-item list-group-item-action">{{
+          user.username }}</a>
+      </div>
+      <button routerLink="/chats" class="btn btn-secondary mt-2"><fa-icon [icon]="faReturn"></fa-icon></button>
+    </div>
+  </div>
+</div>

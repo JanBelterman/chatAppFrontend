@@ -1,0 +1,26 @@
+<div class="menu">
+  <button (click)="onCreate()" class="menu_one" type="button">
+    <fa-icon [icon]="createOne"></fa-icon>
+  </button>
+  <button (click)="onCreateGroup()" class="menu_many" type="button">
+    <fa-icon [icon]="createMany"></fa-icon>
+  </button>
+</div>
+
+<div class="list-group special">
+  <a *ngFor="let thread of threads" (click)="onSelect(thread._id)" routerLink="{{ thread._id }}"
+    routerLinkActive="myActive" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <ng-template [ngIf]="thread.type === 'direct'">
+        <h5 *ngIf="thread.participants[0]._id != userId" class="mb-1">{{ thread.participants[0].username }}</h5>
+        <h5 *ngIf="thread.participants[1]._id != userId" class="mb-1">{{ thread.participants[1].username }}</h5>
+      </ng-template>
+      <ng-template [ngIf]="thread.type === 'group'">
+        <h5 class="mb-1">{{ thread.title }}</h5>
+      </ng-template>
+      <small>{{ thread.lastActivity | date }}</small>
+    </div>
+    <p *ngIf="thread.type === 'group'" class="mb-1">{{ thread.description }}</p>
+    <small *ngIf="thread.lastMessage">{{ thread.lastMessage.content | shorten:30 }}</small>
+  </a>
+</div>

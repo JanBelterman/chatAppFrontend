@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+
+    <div class="card card-signin my-5">
+      <div class="card-body">
+
+        <div>
+          <h5 class="card-title text-center">Sign In</h5>
+          <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>
+        </div>
+
+        <form [formGroup]="signinForm" (ngSubmit)="onSubmit()" class="form-signin">
+
+          <div class="form-label-group">
+            <input type="email" id="inputEmail" class="form-control" formControlName="email" placeholder="Email address"
+              required autofocus>
+            <label for="inputEmail">Email address</label>
+          </div>
+
+          <div class="form-label-group">
+            <input type="password" id="inputPassword" class="form-control" formControlName="password"
+              placeholder="Password" required>
+            <label for="inputPassword">Password</label>
+          </div>
+
+          <div class="custom-control custom-checkbox mb-3">
+            <input class="custom-control-input" id="staySignedInCheckbox" type="checkbox"
+              formControlName="staySignedIn">
+            <label class="custom-control-label" for="staySignedInCheckbox">Stay signed in</label>
+          </div>
+
+          <ngb-alert *ngIf="error" class="alert-danger" (close)="close()">{{ error }}</ngb-alert>
+
+          <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"
+            [disabled]="!signinForm.valid">Sign in</button>
+
+          <p class="createAccountLink">
+            <a routerLink="/signup" style="cursor: pointer;">create an account</a>
+          </p>
+
+          <hr class="my-4">
+          <button class="btn btn-lg btn-google btn-block text-uppercase" type="button">Sign in with Google</button>
+          <button class="btn btn-lg btn-facebook btn-block text-uppercase" type="button">Sign in with
+            Facebook</button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>

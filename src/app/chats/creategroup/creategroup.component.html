@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-6">
+
+    <div class="m-4">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" class="form-control" formControlName="title">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control" formControlName="description">
+      </div>
+
+      <button type="button" routerLink="/chats" class="btn btn-secondary mr-2"><fa-icon [icon]="faReturn"></fa-icon></button>
+
+      <button type="submit" class="btn btn-primary" [disabled]="!createForm.valid || users.length === 0">Create</button>
+
+    </form>
+  </div>
+
+  </div>
+
+  <div class="col-5">
+    <h2 class="text-center">select users</h2>
+    <div class="list-group">
+      <a *ngFor="let user of userso; let i = index" (click)="onSelect(user._id, i)" style="cursor: pointer;" class="list-group-item list-group-item-action">{{
+        user.username }}</a>
+    </div>
+  </div>
+</div>

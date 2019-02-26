@@ -1,0 +1,53 @@
+<div class="menu">
+  <ng-template [ngIf]="thread.type === 'direct'">
+    <h4 *ngIf="thread.participants[0]._id != userId" class="menu_title">{{ thread.participants[0].username }}</h4>
+    <h4 *ngIf="thread.participants[1]._id != userId" class="menu_title">{{ thread.participants[1].username }}</h4>
+  </ng-template>
+  <h4 *ngIf="thread.type === 'group' && !updating" class="menu_title">{{ thread.title }}</h4>
+  <form [formGroup]="updateTitleForm" (ngSubmit)="onSubmitTitleUpdate()" *ngIf="updating">
+    <input type="text" formControlName="title">
+    <button type="submit">-></button>
+  </form>
+  <button *ngIf="thread.type === 'direct' || userId == thread.owner._id" class="menu_delete_button"
+    (click)="onDeleteThread()" type="button">
+    <fa-icon [icon]="deleteIcon"></fa-icon>
+  </button>
+  <button *ngIf="thread.type === 'group' && userId == thread.owner._id" class="menu_update_button"
+    (click)="onUpdateTitle()" type="button">
+    <fa-icon [icon]="updateIcon"></fa-icon>
+  </button>
+  <button *ngIf="thread.type === 'group' && userId == thread.owner._id" class="menu_users_button"
+    (click)="onUpdateUsers()" type="button">
+    <fa-icon [icon]="usersUpdate"></fa-icon>
+  </button>
+</div>
+
+<div #scrollMe class="scrollPane">
+
+  <div *ngFor="let message of thread.messages; let i = index">
+    <a style="display: block; cursor: pointer;" (click)="onDeleteMessage(i, message._id)" class="mr-2">
+      <div class="chat_bubble" [ngClass]="{ bubble_send: message.sender._id == userId, bubble_received: message.sender._id != userId,
+        messageBatchFirst: i == 0 || message.sender._id != thread.messages[i - 1].sender._id }">
+        <div
+          [ngClass]="{ received_message_text: message.sender._id != userId, send_message_text: message.sender._id == userId }">
+          <p *ngIf="(thread.type === 'group' && message.sender._id != userId) && (i == 0 || message.sender._id != thread.messages[i - 1].sender._id)"
+            class="message_title">{{ message.sender.username }}</p>
+          <p class="message_content">{{ message.content }}</p>
+          <span *ngIf="message.dateTime" class="time_date">{{ message.dateTime | date:"HH:mm" }}</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<div class="type_msg">
+  <form [formGroup]="newmsgForm" (ngSubmit)="onSubmitMessage()">
+    <div class="input_msg_write">
+      <input type="text" class="write_msg" placeholder="Type a message" formControlName="content" />
+      <button class="msg_send_btn" [disabled]="!newmsgForm.valid" type="submit">
+        <fa-icon [icon]="sendIcon"></fa-icon>
+      </button>
+    </div>
+  </form>
+</div>

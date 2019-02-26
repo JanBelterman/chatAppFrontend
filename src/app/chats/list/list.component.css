@@ -1,0 +1,52 @@
+/* Menu */
+.menu {
+    background-color: #128c7e;
+    height: 50px;
+}
+
+.menu_one {
+    /* background: #c42929 none repeat scroll 0 0; */
+    background: transparent;
+    border: medium none;
+    border-radius: 10%;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px;
+    left: 10px;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+}
+.menu_many {
+    /* background: #c42929 none repeat scroll 0 0; */
+    background: transparent;
+    border: medium none;
+    border-radius: 10%;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px;
+    left: 50px;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+}
+
+.special .list-group-item:first-child {
+    border-top-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+}
+.special .list-group-item:last-child {
+    border-bottom-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+}
+  
+.special.list-group-item:hover
+.special.list-group-item:focus
+.special.list-group-item:active {
+    background-color: rgb(236, 236, 236);
+}
+.myActive {
+    background-color: rgb(236, 236, 236);
+}

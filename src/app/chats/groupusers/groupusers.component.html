@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <div class="ml-2 mr-2">
+        <h2 class="text-center">Remove users</h2>
+        <div class="list-group">
+          <a *ngFor="let user of participants; let i = index" (click)="onParticipantSelect(i)" style="cursor: pointer;"
+            class="list-group-item list-group-item-action">
+            {{ user.username }}
+          </a>
+        </div>
+        <button routerLink="/chats" class="btn btn-secondary mt-2">
+          <fa-icon [icon]="faReturn"></fa-icon> cancel
+        </button>
+        <button [disabled]="participants.length == 0" (click)="onSubmit()" class="btn btn-primary mt-2 float-right">
+          save <fa-icon [icon]="faSubmit"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="ml-2 mr-2">
+        <h2 class="text-center">Add users</h2>
+        <div class="list-group">
+          <a *ngFor="let user of notParticipants; let i = index" (click)="onNotParticipantSelect(i)" style="cursor: pointer;"
+            class="list-group-item list-group-item-action">
+            {{ user.username }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

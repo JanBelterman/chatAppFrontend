@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand-sm fixed-top navbar-custom">
+
+  <a routerlink="/" style="cursor: pointer;" class="navbar-brand">Studdack</a>
+
+  <ul class="navbar-nav ml-auto">
+    <li *ngIf="isAuth()" (click)="singout()" class="nav-item"><a style="cursor: pointer;" class="nav-link">
+        <fa-icon [icon]="faSignout"></fa-icon>
+      </a></li>
+  </ul>
+
+</nav>
