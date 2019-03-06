@@ -39,9 +39,10 @@
       <fa-icon [icon]="optionsButtonIcon"></fa-icon>
     </button>
     <mat-menu class="remove_outline" #optionsMenu="matMenu">
-      <button mat-menu-item class="remove_outline">Delete chat</button>
-      <button mat-menu-item class="remove_outline">Update title</button>
-      <button mat-menu-item class="remove_outline">Manage users</button>
+      <button (click)="onDeleteThread(threadListItem.thread._id)" mat-menu-item class="remove_outline">Delete
+        chat</button>
+      <button *ngIf="threadListItem.thread.type === 'group' && threadListItem.thread.owner._id === userId" mat-menu-item
+        class="remove_outline">Manage users</button>
     </mat-menu>
 
   </a>

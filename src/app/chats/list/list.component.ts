@@ -119,4 +119,8 @@ export class ListComponent implements OnInit, OnDestroy {
   onCreateDirect() { this.router.navigate(['/newchat']) }
   onCreateGroup() { this.router.navigate(['/createGroup']) }
 
+  // Options button events
+  onDeleteThread(id: String) { this.threadsService.deleteThread(id).subscribe() }
+  onManageUsers(id: String) { this.router.navigate([`/groupusers/${id}`]) }
+
 }
