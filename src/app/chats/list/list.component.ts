@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ThreadsService } from '../../services/threads.service'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
-import { faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faUsers, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { Thread } from 'src/app/models/thread'
 import { AuthService } from 'src/app/services/auth.service';
+import { concatAll, map } from 'rxjs/operators';
+import { ThreadListItem } from './threadListItem';
 
 @Component({
   selector: 'app-list',
@@ -13,17 +15,22 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class ListComponent implements OnInit, OnDestroy {
 
-  createOne = faUser
-  createMany = faUsers
+  // Icons
+  createDirectIcon = faUser
+  createGroupIcon = faUsers
+  optionsButtonIcon = faCaretDown
 
-  threads: Thread[] = []
+  // Domain data
+  threadListItems: ThreadListItem[] = []
   userId: String
 
+  // Event subscriptions
   private newMessageSub: Subscription
   private threadDeletedSub: Subscription
   private titleUpdateSub: Subscription
 
-  private currentThreadId: String
+  // Active thread
+  private activeThreadId: String
 
   constructor(
     private threadsService: ThreadsService,
@@ -34,11 +41,14 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Get threads & userId
     this.userId = this.authService.userId
-    this.threadsService.fetchThreads().subscribe((threads: Thread[]) => {
-      this.threads = threads
-      if (this.threads.length > 0) {
-        this.router.navigate([`/chats/${this.threads[0]._id}`])
-        this.currentThreadId = this.threads[0]._id
+    this.threadsService.fetchThreads().pipe(
+      concatAll(),
+      map((thread: Thread) => { return new ThreadListItem(thread) })
+    ).subscribe((threadListItem: ThreadListItem) => {
+      this.threadListItems.push(threadListItem)
+      if (this.threadListItems.length === 1) {
+        this.router.navigate([`/chats/${this.threadListItems[0].thread._id}`])
+        this.activeThreadId = this.threadListItems[0].thread._id
       }
     })
 
@@ -47,44 +57,44 @@ export class ListComponent implements OnInit, OnDestroy {
       // Move thread to first in list and update last message
       let threadToMove
       let i = 0
-      for (const thread of this.threads) {
-        if (thread._id === update.threadId) {
+      for (const threadListItem of this.threadListItems) {
+        if (threadListItem.thread._id === update.threadId) {
           if (update.content !== '') {
-            thread.lastMessage = update.message
+            threadListItem.thread.lastMessage = update.message
           }
-          threadToMove = thread
+          threadToMove = threadListItem
           break;
         }
         i++
       }
-      this.threads.splice(i, 1)
-      this.threads.unshift(threadToMove)
+      this.threadListItems.splice(i, 1)
+      this.threadListItems.unshift(threadToMove)
     })
 
     this.threadDeletedSub = this.threadsService.threadDeleted.subscribe((threadId: String) => {
       // Delete thread from this list
       let i = 0
-      for (const thread of this.threads) {
-        if (thread._id === threadId) {
-          this.threads.splice(i, 1)
+      for (const threadListItem of this.threadListItems) {
+        if (threadListItem.thread._id === threadId) {
+          this.threadListItems.splice(i, 1)
           break
         }
         i++
       }
       // Redirect if chat was selected
-      if (this.currentThreadId === threadId) {
-        if (this.threads.length === 0) this.router.navigate(['/chats'])
+      if (this.activeThreadId === threadId) {
+        if (this.threadListItems.length === 0) this.router.navigate(['/chats'])
         else {
-          this.router.navigate([`/chats/${this.threads[0]._id}`])
-          this.currentThreadId = this.threads[0]._id
+          this.router.navigate([`/chats/${this.threadListItems[0].thread._id}`])
+          this.activeThreadId = this.threadListItems[0].thread._id
         }
       }
     })
 
     this.titleUpdateSub = this.threadsService.titleUpdated.subscribe((titleChange: any) => {
-      for (const thread of this.threads) {
-        if (thread._id === titleChange.threadId) {
-          thread.title = titleChange.newTitle
+      for (const threadListItem of this.threadListItems) {
+        if (threadListItem.thread._id === titleChange.threadId) {
+          threadListItem.thread.title = titleChange.newTitle
           break;
         }
       }
@@ -92,22 +102,21 @@ export class ListComponent implements OnInit, OnDestroy {
 
   }
 
-  onSelect(id: String) {
-    this.currentThreadId = id
-  }
+  showOptionsButton(index: number) { this.threadListItems[index].optionsButtonShown = true }
 
+  hideOptionsButton(index: number) { this.threadListItems[index].optionsButtonShown = false }
+
+  onSelectThread(id: String) { this.activeThreadId = id }
+
+  // Unsubscribe from events
   ngOnDestroy() {
     this.newMessageSub.unsubscribe()
     this.threadDeletedSub.unsubscribe()
     this.titleUpdateSub.unsubscribe()
   }
 
-  onCreate() {
-    this.router.navigate(['/newchat'])
-  }
-
-  onCreateGroup() {
-    this.router.navigate(['/createGroup'])
-  }
+  // Router events
+  onCreateDirect() { this.router.navigate(['/newchat']) }
+  onCreateGroup() { this.router.navigate(['/createGroup']) }
 
 }
