@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { tap } from 'rxjs/operators'
 import { Login } from '../models/login';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class AuthService {
   userId: String
 
   constructor(
+    private websocketService: WebsocketService,
     private httpClient: HttpClient
   ) {
     this.token = localStorage.getItem('token')
@@ -47,6 +49,7 @@ export class AuthService {
       localStorage.setItem('token', token.toString())
       localStorage.setItem('userId', userId.toString())
     }
+    this.websocketService.connect()
   }
 
   signout() {
@@ -54,6 +57,7 @@ export class AuthService {
     this.userId = null
     localStorage.removeItem('token')
     localStorage.removeItem('userId')
+    this.websocketService.disconnect()
   }
 
 }

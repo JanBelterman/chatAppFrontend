@@ -2,24 +2,37 @@ import { Injectable } from "@angular/core"
 import { Subject, Observable } from "rxjs"
 import { environment } from "src/environments/environment"
 import * as io from 'socket.io-client'
+import { ThreadsService } from "./threads.service";
+import { Message } from "../models/message";
 
 @Injectable({
     providedIn: 'root'
 })
 export class WebsocketService {
 
-    /*  Connects to socket server & returns subject for message event */
-    connect(): Subject<MessageEvent> {
-        const socket = io(environment.ws_url, { transports: ['websocket'] })
-        let observable = new Observable(observer => {
-            socket.on('message', (data: any) => {
-                observer.next(data)
-            })
-            return () => {
-                socket.disconnect()
-            }
+    constructor() {
+        this.newMessageFromSocket = new Subject()
+    }
+
+    // Event
+    newMessageFromSocket: Subject<{ threadId: String, message: Message }>
+
+    connected: boolean = false
+    private socket: any
+
+    /*  Connects to socket server */
+    connect() {
+        this.connected = true
+        this.socket = io(environment.ws_url, { transports: ['websocket'] })
+        this.socket.on('message', (data: any) => {
+            this.newMessageFromSocket.next(data)
         })
-        return Subject.create(null, observable)
+    }
+
+    // Disconnects from socket server
+    disconnect() {
+        this.connected = false
+        this.socket.disconnect()
     }
 
 }

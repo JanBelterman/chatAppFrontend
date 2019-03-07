@@ -12,9 +12,7 @@ import { Message } from '../models/message';
 })
 export class ThreadsService {
 
-  websocket: Subject<any>
-
-  // Events
+  // Internal events
   newMessage = new Subject<{ threadId: String, message: Message }>()
   threadDeleted = new Subject<String>()
   titleUpdated = new Subject<{ threadId: String, newTitle: String }>()
@@ -22,10 +20,10 @@ export class ThreadsService {
   constructor(
     private httpClient: HttpClient,
     private authService: AuthService,
-    websocketService: WebsocketService
+    private websocketService: WebsocketService
   ) {
-    this.websocket = <Subject<any>>websocketService.connect()
-    this.websocket.subscribe((data: { threadId: String, message: Message }) => {
+    if (!this.websocketService.connected) this.websocketService.connect()
+    this.websocketService.newMessageFromSocket.subscribe((data: { threadId: String, message: Message }) => {
       // Only trigger if sender is not this user otherwise duplicate events triggerd
       if (this.authService.userId !== data.message.sender._id) {
         this.newMessage.next({ threadId: data.threadId, message: data.message })
